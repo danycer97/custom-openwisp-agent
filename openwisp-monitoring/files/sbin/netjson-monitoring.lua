@@ -128,6 +128,7 @@ print("---------------------------")
 local custom_interfaces = nixio.getifaddrs()
 local bond_interfaces = {}
 
+
 -- Funzione per stampare i campi di una tabella, gestendo i casi annidati
 local function stampaTabella(tabella, prefisso)
   prefisso = prefisso or ""
@@ -146,11 +147,19 @@ for _, interface in ipairs(custom_interfaces) do
     print("stats bond0")
     bond_interfaces.name = interface.name
     bond_interfaces.type = 'ethernet'
-    bond_interfaces.family = interface.family
-    bond_interfaces.addr = interface.addr
-    bond_interfaces.netmask = interface.netmask
+
+    local bond_addresses = {}
+    bond_addresses.proto = 'static'
+    bond_addresses.family = 'ipv4'
+    bond_addresses.mask = 24
+    bond_addresses.address = interface.addr
+
+    bond_interfaces.addresses = bond_addresses
+    --bond_interfaces.family = interface.family
+    --bond_interfaces.addr = interface.addr
+    
     bond_interfaces.up = interface.flags.up or nil
-    bond_interfaces.multicast = interface.flags.multicast or nil
+    --bond_interfaces.multicast = interface.flags.multicast or nil
 
      --stampaTabella(interface)
   end
